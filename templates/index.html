@@ -1,0 +1,1344 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArogyaDhwani | VoiceCare AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:#080f1d;--panel:rgba(19,32,53,.88);--border:rgba(148,190,220,.16);
+  --text:#edf7ff;--muted:#8da4bb;--cyan:#55e4ed;--blue:#648bff;
+  --violet:#a78bfa;--green:#4ce0b2;--red:#ff7385;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;background:radial-gradient(ellipse at 70% 0%,#152e50 0%,transparent 42%),
+ radial-gradient(ellipse at 0% 70%,#102d37 0%,transparent 35%),var(--bg);
+ color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{
+ width:245px;padding:28px 19px;border-right:1px solid var(--border);
+ background:#070f1cdd;backdrop-filter:blur(22px);
+ display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:5
+}
+.brand{display:flex;align-items:center;gap:12px;margin:4px 7px 48px}
+.brand-icon{
+ width:43px;height:43px;border-radius:14px;display:grid;place-items:center;
+ background:linear-gradient(135deg,#55e4ed,#477bff);color:#071626;
+ font-size:22px;box-shadow:0 0 28px #55e4ed55
+}
+.brand-name{font:700 20px Outfit}
+.brand-name span{color:var(--cyan)}
+.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px;margin-top:3px}
+.nav-label{font-size:10px;letter-spacing:2px;color:#668098;margin:0 10px 14px}
+.nav{display:grid;gap:8px}
+.nav button{
+ background:transparent;border:1px solid transparent;color:#9bb0c5;
+ padding:13px 14px;text-align:left;border-radius:12px;display:flex;gap:13px;
+ align-items:center;font-size:13px;transition:.25s
+}
+.nav button:hover,.nav button.active{
+ color:#e9fcff;background:linear-gradient(100deg,#1a4856aa,#243d62aa);
+ border-color:#55e4ed30;box-shadow:inset 3px 0 var(--cyan)
+}
+.nav-icon{font-size:18px;width:20px;text-align:center}
+.side-bottom{margin-top:auto}
+.status-card{border:1px solid var(--border);border-radius:14px;padding:15px;background:#13243a88}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:7px}
+.status-card strong{font-size:12px}
+.status-card p{font-size:11px;color:var(--muted);margin:8px 0 0}
+.main{margin-left:245px;width:calc(100% - 245px);padding:30px 4.2% 55px;max-width:1600px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
+.eyebrow{font-size:10px;letter-spacing:2.4px;color:var(--cyan);font-weight:700}
+.topbar h1{font:600 25px Outfit;margin:7px 0 0}
+.top-right{display:flex;align-items:center;gap:12px}
+.live-pill{border:1px solid #4ce0b244;background:#4ce0b210;color:var(--green);padding:8px 12px;border-radius:30px;font-size:11px}
+.avatar{height:38px;width:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#4de1dc,#6e82ff);color:#061522;font-weight:800}
+.hero{
+ position:relative;overflow:hidden;border:1px solid var(--border);border-radius:25px;
+ background:linear-gradient(115deg,#142b43ed,#12213bed 60%,#25254a99);
+ padding:34px 38px;display:grid;grid-template-columns:1.1fr .9fr;min-height:300px;
+ box-shadow:0 25px 80px #0004
+}
+.hero-copy{position:relative;z-index:1;align-self:center}
+.hero h2{font:700 clamp(27px,3.2vw,43px)/1.13 Outfit;margin:14px 0}
+.hero h2 span{background:linear-gradient(90deg,var(--cyan),#9d9aff);color:transparent;background-clip:text}
+.hero-copy p{color:#a8bbce;line-height:1.7;font-size:13px;max-width:490px}
+.hero-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}
+.tag{font-size:10px;color:#b9d8e8;padding:8px 11px;border:1px solid #8fc6d42b;border-radius:30px;background:#ffffff08}
+.mic-stage{position:relative;display:grid;place-items:center;min-height:230px;perspective:800px}
+.orbit{position:absolute;width:240px;height:240px;border:1px solid #55e4ed35;border-radius:50%;transform:rotateX(68deg);animation:orbit 9s linear infinite}
+.orbit.two{width:190px;height:190px;border-color:#a78bfa55;animation-duration:13s}
+@keyframes orbit{to{transform:rotateX(68deg) rotateZ(360deg)}}
+.mic-glow{position:absolute;width:130px;height:130px;border-radius:50%;background:#48dce9;filter:blur(65px);opacity:.45}
+.mic-3d{
+ width:83px;height:145px;border-radius:43px;position:relative;z-index:2;
+ background:linear-gradient(110deg,#244c69,#a6f7f4 19%,#367c9b 38%,#102a48 65%,#6b9bb7);
+ box-shadow:inset 8px 0 13px #d8ffff55,0 22px 35px #0009,0 0 35px #55e4ed55;
+ animation:float 4s ease-in-out infinite
+}
+.mic-3d:before{content:"";position:absolute;top:15px;left:12px;width:59px;height:76px;border-radius:35px;background:repeating-linear-gradient(to bottom,#0c2945 0 3px,#8de9ed 4px,#0c2945 6px)}
+.mic-3d:after{content:"";position:absolute;bottom:-25px;left:38px;width:8px;height:30px;background:#8cecf0;border-radius:5px}
+.mic-base{position:absolute;z-index:2;bottom:34px;width:100px;height:18px;border-radius:50%;background:linear-gradient(90deg,#17354f,#8cecf0,#18344e)}
+@keyframes float{0%,100%{transform:translateY(0) rotateY(-13deg)}50%{transform:translateY(-12px) rotateY(13deg)}}
+.sound-ring{position:absolute;border:2px solid #55e4ed55;border-radius:50%;width:130px;height:130px;animation:pulse 2.8s ease-out infinite}
+.sound-ring.r2{animation-delay:1.4s}
+@keyframes pulse{0%{transform:scale(.75);opacity:.7}100%{transform:scale(1.8);opacity:0}}
+.section-heading{display:flex;justify-content:space-between;align-items:center;margin:34px 0 17px}
+.section-heading h3{font:600 19px Outfit;margin:0}
+.section-heading p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.step-label{font-size:10px;color:var(--cyan);letter-spacing:1px}
+.workspace{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.panel{
+ background:linear-gradient(145deg,#14243bdc,#101c30dc);
+ border:1px solid var(--border);border-radius:20px;padding:22px;
+ box-shadow:0 15px 45px #0002;backdrop-filter:blur(20px);min-width:0
+}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.panel-head h4{font:600 15px Outfit;margin:0}
+.panel-head span{font-size:10px;color:var(--muted)}
+.voice-zone{
+ border:1px dashed #5cdde45a;border-radius:16px;padding:20px 15px;
+ background:radial-gradient(ellipse at center,#24556835,transparent 75%);
+ text-align:center;min-height:155px;display:grid;place-items:center
+}
+.record-button{
+ width:65px;height:65px;border-radius:50%;border:1px solid #7bf0f0;
+ color:#071a28;background:linear-gradient(145deg,#9afff4,#40b9d8);
+ box-shadow:0 0 30px #55e4ed55;font-size:23px;transition:.2s
+}
+.record-button:hover{transform:scale(1.08)}
+.record-button.recording{background:linear-gradient(145deg,#ffb1b1,#fa596c);border-color:#ffb1b1;animation:recordpulse 1s infinite}
+@keyframes recordpulse{50%{box-shadow:0 0 0 13px #fa596c20,0 0 35px #fa596c88}}
+.voice-zone p{font-size:12px;color:#c6d8e7;margin:12px 0 4px}
+.voice-zone small{font-size:10px;color:var(--muted)}
+.actions{display:flex;gap:9px;margin-top:13px;flex-wrap:wrap}
+.btn{border:1px solid var(--border);background:#ffffff09;color:#d7e8f5;padding:10px 14px;border-radius:10px;font-size:11px;transition:.2s}
+.btn:hover{border-color:#55e4ed88;background:#55e4ed12}
+.btn.primary{border:0;color:#071722;font-weight:700;background:linear-gradient(100deg,#61e5e7,#6ca6ff)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+select,textarea,input{
+ width:100%;background:#0c192b;color:#eaf5ff;border:1px solid var(--border);
+ border-radius:10px;padding:11px 12px;outline:none;font-size:12px
+}
+select:focus,textarea:focus,input:focus{border-color:#55e4ed88}
+.field-label{display:block;font-size:10px;color:#93aabe;margin:15px 0 7px}
+textarea{resize:vertical;min-height:90px;line-height:1.6}
+.result-box{
+ min-height:85px;background:#0b192a;border:1px solid var(--border);
+ border-radius:12px;padding:14px;color:#c5d8e8;font-size:12px;line-height:1.7;
+ white-space:pre-wrap;overflow-wrap:anywhere
+}
+.result-box.placeholder{color:#607b91}
+.notice{font-size:10px;color:#8ca5b8;line-height:1.6;margin-top:12px}
+.progress{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:18px}
+.progress-item{padding:13px;border:1px solid var(--border);border-radius:12px;background:#ffffff05}
+.progress-item b{font-size:10px;color:var(--cyan);display:block;margin-bottom:6px}
+.progress-item span{font-size:10px;color:#9bb0c5}
+.footer{text-align:center;color:#617b91;font-size:10px;margin-top:32px}
+.view{display:none}.view.active{display:block}
+#toast{
+ position:fixed;bottom:25px;right:25px;z-index:20;padding:13px 18px;
+ background:#19364a;border:1px solid #55e4ed66;color:white;border-radius:12px;
+ font-size:12px;opacity:0;transform:translateY(12px);transition:.25s;pointer-events:none;
+ max-width:85vw
+}
+#toast.show{opacity:1;transform:translateY(0)}
+
+/* SMART FORM FILLING: independent 3D microphone */
+.smart-hero{
+ position:relative;overflow:hidden;border:1px solid #55e4ed30;border-radius:24px;
+ background:radial-gradient(ellipse at 50% 45%,#16445a88,transparent 55%),
+ linear-gradient(145deg,#142b43,#101b32 70%,#242044);
+ padding:28px 20px 25px;text-align:center;box-shadow:0 20px 60px #0004
+}
+.smart-hero h2{font:600 24px Outfit;margin:8px 0}
+.smart-hero>p{font-size:12px;color:#9eb5c9;line-height:1.7;margin:7px auto;max-width:520px}
+.smart-mic-stage{
+ height:260px;display:grid;place-items:center;position:relative;perspective:900px;
+ margin:5px auto 0;max-width:480px
+}
+.smart-orbit{
+ position:absolute;width:225px;height:225px;border:1px solid #55e4ed55;
+ border-radius:50%;transform:rotateX(68deg);animation:smartOrbit 10s linear infinite
+}
+.smart-orbit.second{width:180px;height:180px;border-color:#a78bfa66;animation-duration:14s;animation-direction:reverse}
+@keyframes smartOrbit{to{transform:rotateX(68deg) rotateZ(360deg)}}
+.smart-glow{
+ position:absolute;width:125px;height:125px;border-radius:50%;
+ background:#55e4ed;filter:blur(65px);opacity:.5
+}
+.smart-mic{
+ width:76px;height:132px;border-radius:40px;position:relative;z-index:3;
+ background:linear-gradient(110deg,#244c69,#b6ffff 18%,#367c9b 39%,#102a48 68%,#8ad4dc);
+ box-shadow:inset 8px 0 14px #eaffff66,0 22px 35px #0009,0 0 40px #55e4ed66;
+ animation:smartFloat 3.5s ease-in-out infinite
+}
+.smart-mic:before{
+ content:"";position:absolute;top:14px;left:11px;width:54px;height:69px;border-radius:30px;
+ background:repeating-linear-gradient(to bottom,#0c2945 0 3px,#9df8f2 4px,#0c2945 6px)
+}
+.smart-mic:after{
+ content:"";position:absolute;bottom:-24px;left:34px;width:8px;height:29px;
+ background:#8cecf0;border-radius:5px
+}
+.smart-mic-base{
+ position:absolute;z-index:2;bottom:32px;width:100px;height:17px;border-radius:50%;
+ background:linear-gradient(90deg,#17354f,#8cecf0,#18344e);
+ box-shadow:0 7px 20px #0008
+}
+.smart-ring{
+ position:absolute;width:135px;height:135px;border:2px solid #55e4ed66;
+ border-radius:50%;animation:smartPulse 2.5s ease-out infinite
+}
+.smart-ring.delay{animation-delay:1.25s}
+@keyframes smartFloat{0%,100%{transform:translateY(0) rotateY(-12deg)}50%{transform:translateY(-13px) rotateY(12deg)}}
+@keyframes smartPulse{0%{transform:scale(.7);opacity:.8}100%{transform:scale(1.9);opacity:0}}
+.smart-mic-stage.is-recording .smart-mic{animation:smartRecord 1s ease-in-out infinite}
+.smart-mic-stage.is-recording .smart-ring{border-color:#ff7385;animation-duration:1s}
+@keyframes smartRecord{50%{transform:translateY(-10px) scale(1.06)}}
+.smart-record-button{
+ border:1px solid #a4ffff;color:#071a28;font-weight:700;font-size:13px;
+ padding:14px 26px;border-radius:30px;
+ background:linear-gradient(110deg,#9afff4,#55c5e6,#829cff);
+ box-shadow:0 0 30px #55e4ed55;transition:.2s
+}
+.smart-record-button:hover{transform:translateY(-2px);box-shadow:0 0 40px #55e4ed88}
+.smart-record-button.recording{background:linear-gradient(110deg,#ffb1b1,#fa596c);color:#240910;border-color:#ffb1b1}
+.smart-upload{max-width:500px;margin:18px auto 0;text-align:left}
+.smart-upload input{background:#0b192a}
+.smart-status{font-size:11px;color:#9bb7ca;margin-top:13px;min-height:18px}
+.smart-workflow-label{
+ display:inline-block;font-size:10px;letter-spacing:2px;color:var(--cyan);
+ border:1px solid #55e4ed35;background:#55e4ed0d;border-radius:30px;padding:7px 12px
+}
+@media(max-width:900px){
+ .sidebar{width:75px;padding:22px 10px}.brand{margin:0 5px 40px}
+ .brand-name,.brand small,.nav-label,.nav-text,.status-card{display:none}
+ .brand-icon{width:45px}.nav button{justify-content:center;padding:13px 5px}
+ .main{margin-left:75px;width:calc(100% - 75px);padding:25px 3%}
+ .hero{padding:25px;grid-template-columns:1fr .8fr}
+}
+@media(max-width:650px){
+ .main{padding:20px 14px;margin-left:65px;width:calc(100% - 65px)}
+ .sidebar{width:65px}.hero{grid-template-columns:1fr;padding:24px}
+ .mic-stage{min-height:190px}.workspace{grid-template-columns:1fr}
+ .topbar h1{font-size:20px}.live-pill{display:none}
+ .progress{grid-template-columns:1fr 1fr}
+ .smart-mic-stage{height:230px}
+ .smart-hero{padding:22px 13px}
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand">
+  <div class="brand-icon">✚</div>
+  <div class="brand-name">Arogya<span>Dhwani</span><small>VOICECARE AI</small></div>
+ </div>
+ <div class="nav-label">WORKSPACE</div>
+ <nav class="nav">
+  <button class="active" data-view="home"><span class="nav-icon">⌂</span><span class="nav-text">Overview</span></button>
+  <button data-view="consultation"><span class="nav-icon">◉</span><span class="nav-text">Consultation</span></button>
+  <button data-view="patient"><span class="nav-icon">♡</span><span class="nav-text">Patient details</span></button>
+  <button data-view="about"><span class="nav-icon">ⓘ</span><span class="nav-text">About ArogyaDhwani</span></button>
+  <button data-view="smart-form"><span class="nav-icon">✧</span><span class="nav-text">Smart Form Filling</span></button>
+ </nav>
+ <div class="side-bottom">
+  <div class="status-card">
+   <strong><i class="status-dot"></i>Voice engine ready</strong>
+   <p>Gnani Prisma STT · Timbre TTS</p>
+  </div>
+ </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+ <div><div class="eyebrow">GNANI AI · HEALTHCARE COMMUNICATION</div><h1 id="pageTitle">VoiceCare Experience</h1></div>
+ <div class="top-right"><span class="live-pill">● SYSTEM READY</span><div class="avatar">A</div></div>
+</header>
+
+<!-- OVERVIEW: EXISTING WORKFLOW PRESERVED -->
+<section class="view active" id="home">
+ <div class="hero">
+  <div class="hero-copy">
+   <div class="eyebrow">CARE BEGINS WITH UNDERSTANDING</div>
+   <h2>Every voice deserves<br><span>to be understood.</span></h2>
+   <p>ArogyaDhwani helps patients and healthcare professionals communicate through voice-powered AI. Speak naturally, translate messages and review every response.</p>
+   <div class="hero-tags">
+    <span class="tag">Gnani Prisma STT</span><span class="tag">Timbre Voice AI</span><span class="tag">Two-way translation</span>
+   </div>
+  </div>
+  <div class="mic-stage">
+   <div class="orbit"></div><div class="orbit two"></div>
+   <div class="sound-ring"></div><div class="sound-ring r2"></div>
+   <div class="mic-glow"></div><div class="mic-3d"></div><div class="mic-base"></div>
+  </div>
+ </div>
+
+ <div class="section-heading">
+  <div><h3>Patient to doctor</h3><p>Capture the patient's voice and translate the message for the doctor.</p></div>
+  <span class="step-label">01 — 03</span>
+ </div>
+
+ <div class="workspace">
+  <div class="panel">
+   <div class="panel-head"><h4>01. Patient voice</h4><span>GNANI PRISMA</span></div>
+   <label class="field-label">Patient's spoken language</label>
+   <select id="sttLanguage">
+    <option value="indic-auto">Auto detect language</option>
+    <option value="en-IN">English</option><option value="hi-IN">Hindi</option>
+    <option value="kn-IN">Kannada</option><option value="ta-IN">Tamil</option>
+    <option value="te-IN">Telugu</option><option value="ml-IN">Malayalam</option>
+   </select>
+   <div class="voice-zone">
+    <button class="record-button" id="recordBtn" title="Record patient">🎙</button>
+    <div><p id="recordLabel">Tap to record patient voice</p><small id="recordHint">Or upload an audio recording</small></div>
+   </div>
+   <input type="file" id="audioFile" accept="audio/*" style="margin-top:13px">
+   <div class="actions">
+    <button class="btn primary" id="transcribeBtn">Transcribe patient audio →</button>
+    <button class="btn" id="clearAudioBtn">Clear</button>
+   </div>
+   <p class="notice">Use fictional patient information for demonstrations. Audio is sent to Gnani Prisma for transcription.</p>
+  </div>
+
+  <div class="panel">
+   <div class="panel-head"><h4>02. Patient transcript</h4><span>VOICE → TEXT</span></div>
+   <div class="result-box placeholder" id="transcript">Patient transcript will appear here.</div>
+   <div class="notice">Detected language: <strong id="detectedLanguage">Waiting for audio</strong></div>
+   <label class="field-label">Doctor's language</label>
+   <select id="doctorLanguage">
+    <option value="en-IN">English</option><option value="hi-IN">Hindi</option>
+    <option value="kn-IN">Kannada</option><option value="ta-IN">Tamil</option>
+    <option value="te-IN">Telugu</option><option value="ml-IN">Malayalam</option>
+   </select>
+   <button class="btn primary" id="translatePatientBtn" style="width:100%;margin-top:12px">Translate for doctor →</button>
+   <label class="field-label">Translated patient message · Doctor review</label>
+   <div class="result-box placeholder" id="patientTranslation">Translated message will appear here.</div>
+  </div>
+ </div>
+
+ <div class="section-heading">
+  <div><h3>Doctor to patient</h3><p>Doctor speaks or types a response. Translate and generate patient audio.</p></div>
+  <span class="step-label">04 — 06</span>
+ </div>
+
+ <div class="workspace">
+  <div class="panel">
+   <div class="panel-head"><h4>03. Doctor voice</h4><span>MICROPHONE INPUT</span></div>
+   <label class="field-label">Doctor's spoken language</label>
+   <select id="doctorSpokenLanguage">
+    <option value="en-IN">English</option><option value="hi-IN">Hindi</option>
+    <option value="kn-IN">Kannada</option><option value="ta-IN">Tamil</option>
+    <option value="te-IN">Telugu</option><option value="ml-IN">Malayalam</option>
+   </select>
+   <div class="voice-zone">
+    <button class="record-button" id="doctorRecordBtn" title="Record doctor">🎙</button>
+    <div><p id="doctorRecordLabel">Tap to record doctor's response</p><small id="doctorRecordHint">Speak clearly into your microphone</small></div>
+   </div>
+   <button class="btn primary" id="doctorTranscribeBtn" style="width:100%;margin-top:13px">Transcribe doctor voice →</button>
+   <label class="field-label">Doctor's original message</label>
+   <textarea id="doctorText" placeholder="Doctor can also type a response here..."></textarea>
+  </div>
+
+  <div class="panel">
+   <div class="panel-head"><h4>04. Translate & respond</h4><span>REVIEW · TRANSLATE · SPEAK</span></div>
+   <label class="field-label">Patient's preferred language</label>
+   <select id="patientLanguage">
+    <option value="en-IN">English</option><option value="hi-IN">Hindi</option>
+    <option value="kn-IN">Kannada</option><option value="ta-IN">Tamil</option>
+    <option value="te-IN">Telugu</option><option value="ml-IN">Malayalam</option>
+   </select>
+   <button class="btn primary" id="translateDoctorBtn" style="width:100%;margin-top:12px">Translate response for patient →</button>
+   <label class="field-label">Translated response · Review before sharing</label>
+   <textarea id="translatedDoctorText" placeholder="Translated doctor response will appear here..."></textarea>
+   <button class="btn primary" id="speakBtn" style="width:100%;margin-top:12px">Generate patient voice →</button>
+   <audio id="responseAudio" controls style="width:100%;margin-top:15px;display:none"></audio>
+   <p class="notice">The doctor must verify the translation before sharing. Generated audio uses Gnani Timbre.</p>
+  </div>
+ </div>
+
+ <div class="progress">
+  <div class="progress-item"><b>01 / LISTEN</b><span>Capture patient voice</span></div>
+  <div class="progress-item"><b>02 / TRANSLATE</b><span>Patient message for doctor</span></div>
+  <div class="progress-item"><b>03 / RESPOND</b><span>Doctor voice or text</span></div>
+  <div class="progress-item"><b>04 / SHARE</b><span>Translated patient audio</span></div>
+ </div>
+</section>
+
+<section class="view" id="consultation">
+ <div class="section-heading"><div><h3>Consultation workspace</h3><p>Review the latest patient and doctor messages.</p></div></div>
+ <div class="panel">
+  <div class="panel-head"><h4>Patient transcript</h4><span>PRISMA OUTPUT</span></div>
+  <div class="result-box" id="consultTranscript">No patient transcript available yet.</div>
+  <label class="field-label">Doctor's response</label>
+  <textarea id="consultDoctorText" placeholder="Enter doctor's response..."></textarea>
+  <button class="btn primary" id="copyToHome" style="margin-top:12px">Use response in voice workspace</button>
+ </div>
+</section>
+
+<section class="view" id="patient">
+ <div class="section-heading"><div><h3>Patient details</h3><p>Optional information for this demonstration session.</p></div></div>
+ <div class="panel">
+  <label class="field-label">Patient name</label><input id="patientName" placeholder="Fictional patient name">
+  <label class="field-label">Age</label><input id="patientAge" type="number" min="0" max="120" placeholder="Age">
+  <label class="field-label">Consultation reference</label><input id="patientRef" placeholder="Optional reference">
+  <label class="field-label">Additional notes</label><textarea id="patientNotes" placeholder="Optional notes..."></textarea>
+  <button class="btn primary" id="savePatient" style="margin-top:12px">Save details for this session</button>
+  <span class="notice" id="patientSaved"></span>
+ </div>
+</section>
+
+<!-- SMART FORM FILLING: INDEPENDENT MICROPHONE AND TRANSCRIPTION -->
+<section class="view" id="smart-form">
+
+ <div class="section-heading">
+  <div>
+   <h3>Smart Form Filling</h3>
+   <p>Speak naturally. ArogyaDhwani will transcribe your statement and prepare the consultation form.</p>
+  </div>
+  <span class="smart-workflow-label">VOICE TO FORM</span>
+ </div>
+
+ <div class="smart-hero">
+  <div class="eyebrow">GNANI PRISMA · SMART VOICE CAPTURE</div>
+  <h2>Speak. Transcribe. Fill.</h2>
+  <p>Record the patient's statement directly here. No need to visit the Overview page.</p>
+
+  <label class="field-label" for="formSttLanguage" style="max-width:300px;margin:15px auto 7px;text-align:left">Patient's spoken language</label>
+  <select id="formSttLanguage" style="max-width:300px">
+   <option value="indic-auto">Auto detect language</option>
+   <option value="en-IN">English</option>
+   <option value="hi-IN">Hindi</option>
+   <option value="kn-IN">Kannada</option>
+   <option value="ta-IN">Tamil</option>
+   <option value="te-IN">Telugu</option>
+   <option value="ml-IN">Malayalam</option>
+  </select>
+
+  <div class="smart-mic-stage" id="smartMicStage">
+   <div class="smart-orbit"></div>
+   <div class="smart-orbit second"></div>
+   <div class="smart-ring"></div>
+   <div class="smart-ring delay"></div>
+   <div class="smart-glow"></div>
+   <div class="smart-mic"></div>
+   <div class="smart-mic-base"></div>
+  </div>
+
+  <button class="smart-record-button" id="formRecordBtn">🎙 &nbsp; Tap to Speak</button>
+  <div class="smart-status" id="formRecordStatus">Your microphone is ready.</div>
+
+  <div class="smart-upload">
+   <label class="field-label" for="formAudioFile">Or upload a patient audio recording</label>
+   <input type="file" id="formAudioFile" accept="audio/*">
+  </div>
+
+  <div class="actions" style="justify-content:center;margin-top:18px">
+   <button class="btn primary" id="formTranscribeBtn">Transcribe with Gnani Prisma →</button>
+   <button class="btn" id="formClearAudioBtn">Clear audio</button>
+  </div>
+  <p class="notice">Use fictional patient information for demonstrations. Audio is sent to Gnani Prisma for transcription.</p>
+ </div>
+
+ <div class="section-heading">
+  <div><h3>Patient transcript</h3><p>Review the words recognized from the patient's voice.</p></div>
+  <span class="step-label">01 · TRANSCRIPTION</span>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><h4>Voice to text</h4><span>PRISMA OUTPUT</span></div>
+  <div class="result-box placeholder" id="formSourceTranscript">Your patient transcript will appear here after transcription.</div>
+  <div class="notice">Detected language: <strong id="formDetectedLanguage">Waiting for audio</strong></div>
+  <button class="btn primary" id="extractPatientForm" style="width:100%;margin-top:15px">Extract details and fill form ↓</button>
+  <p class="notice" id="formExtractStatus">Only clearly detected details are filled. Unknown fields remain blank.</p>
+ </div>
+
+ <div class="section-heading">
+  <div><h3>Patient consultation form</h3><p>Automatically prepared from the transcript. Review and edit before use.</p></div>
+  <span class="step-label">02 · SMART EXTRACTION</span>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><h4>Patient details</h4><span>REVIEW AND EDIT</span></div>
+  <div class="workspace">
+   <div>
+    <label class="field-label" for="formPatientName">Patient name</label>
+    <input id="formPatientName" placeholder="Not provided">
+   </div>
+   <div>
+    <label class="field-label" for="formPatientAge">Age</label>
+    <input id="formPatientAge" type="number" min="0" max="120" placeholder="Not provided">
+   </div>
+   <div>
+    <label class="field-label" for="formDuration">Symptom duration</label>
+    <input id="formDuration" placeholder="Not provided">
+   </div>
+   <div>
+    <label class="field-label" for="formAllergies">Allergies</label>
+    <input id="formAllergies" placeholder="Not mentioned">
+   </div>
+  </div>
+
+  <label class="field-label" for="formSymptoms">Symptoms / patient statement</label>
+  <textarea id="formSymptoms" placeholder="Patient statement"></textarea>
+
+  <label class="field-label" for="formMedications">Current medications</label>
+  <textarea id="formMedications" placeholder="Not mentioned"></textarea>
+
+  <label class="field-label" for="formNotes">Additional doctor notes</label>
+  <textarea id="formNotes" placeholder="Doctor notes"></textarea>
+
+  <div class="actions">
+   <button class="btn primary" id="generateFormSummary">Generate consultation summary</button>
+   <button class="btn" id="clearPatientForm">Clear form</button>
+  </div>
+ </div>
+
+ <div class="section-heading">
+  <div><h3>Consultation summary</h3><p>Review the prepared summary before using it.</p></div>
+  <span class="step-label">03 · DOCTOR REVIEW</span>
+ </div>
+
+ <div class="panel">
+  <div class="panel-head"><h4>Doctor review</h4><span>CONSULTATION DRAFT</span></div>
+  <div class="result-box placeholder" id="formSummary">Your summary will appear here.</div>
+  <button class="btn" id="copyFormSummary" style="margin-top:12px">Copy summary</button>
+  <p class="notice">Draft for clinician review only. This prototype does not save information to a medical record. It does not diagnose or prescribe treatment.</p>
+ </div>
+</section>
+
+<section class="view" id="about">
+ <div class="section-heading"><div><h3>About ArogyaDhwani</h3><p>Voice-powered communication support.</p></div></div>
+ <div class="panel">
+  <div class="eyebrow">OUR PURPOSE</div>
+  <h2 style="font:600 27px Outfit">Making healthcare conversations clearer.</h2>
+  <p style="color:#a9bdce;line-height:1.9;font-size:13px">
+   ArogyaDhwani is a multilingual healthcare communication prototype using Gnani voice technology and machine translation to support communication between patients and healthcare professionals.
+  </p>
+  <div class="hero-tags"><span class="tag">Gnani Prisma STT</span><span class="tag">Gnani Timbre TTS</span><span class="tag">FastAPI</span><span class="tag">Translation API</span></div>
+  <hr style="border:0;border-top:1px solid var(--border);margin:25px 0">
+  <strong style="color:#ffcf91;font-size:12px">Healthcare safety notice</strong>
+  <p class="notice">This is a communication-support prototype, not a diagnostic system. It does not diagnose conditions or prescribe treatment. A qualified healthcare professional must verify transcripts and translations. Do not use it for emergencies or as a replacement for medical care.</p>
+ </div>
+</section>
+
+<div class="footer">AROGYADHWANI · VOICECARE AI · BUILT WITH GNANI VOICE TECHNOLOGY</div>
+</main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* EXISTING VOICE WORKSPACE SCRIPT */
+const $ = id => document.getElementById(id);
+
+let patientFile = null;
+let doctorFile = null;
+let patientTranscript = "";
+let doctorTranscript = "";
+let patientDetectedLanguage = "en-IN";
+let activeRecorders = {};
+
+const languageNames = {
+ "en-IN":"English","hi-IN":"Hindi","kn-IN":"Kannada",
+ "ta-IN":"Tamil","te-IN":"Telugu","ml-IN":"Malayalam"
+};
+
+function toast(message) {
+ const el = $("toast");
+ el.textContent = message;
+ el.classList.add("show");
+ setTimeout(() => el.classList.remove("show"), 3500);
+}
+
+function showView(name) {
+ document.querySelectorAll(".nav button").forEach(b => b.classList.remove("active"));
+ document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+ const button = document.querySelector(`[data-view="${name}"]`);
+ if (button) button.classList.add("active");
+ $(name).classList.add("active");
+
+ $("pageTitle").textContent = {
+  home:"VoiceCare Experience",
+  consultation:"Consultation workspace",
+  patient:"Patient details",
+  about:"About ArogyaDhwani",
+  "smart-form":"Smart Form Filling"
+ }[name] || "VoiceCare Experience";
+}
+
+document.querySelectorAll(".nav button").forEach(button => {
+ button.addEventListener("click", () => showView(button.dataset.view));
+});
+
+function languageCode(value) {
+ return value === "indic-auto" ? "en-IN" : value;
+}
+
+async function recordAudio(role) {
+ const isPatient = role === "patient";
+ const button = $(isPatient ? "recordBtn" : "doctorRecordBtn");
+ const label = $(isPatient ? "recordLabel" : "doctorRecordLabel");
+ const hint = $(isPatient ? "recordHint" : "doctorRecordHint");
+
+ if (activeRecorders[role]) {
+  activeRecorders[role].recorder.stop();
+  button.classList.remove("recording");
+  button.textContent = "🎙";
+  label.textContent = "Recording captured";
+  hint.textContent = "Preparing audio...";
+  return;
+ }
+
+ let stream;
+
+ try {
+  stream = await navigator.mediaDevices.getUserMedia({audio:true});
+  const recorder = new MediaRecorder(stream);
+  const chunks = [];
+
+  recorder.ondataavailable = event => {
+   if (event.data.size) chunks.push(event.data);
+  };
+
+  activeRecorders[role] = {recorder,stream};
+
+  recorder.onstop = async () => {
+   let audioContext;
+
+   try {
+    const blob = new Blob(chunks, {type:recorder.mimeType || "audio/webm"});
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) throw new Error("Audio conversion is unsupported.");
+
+    audioContext = new AudioContextClass();
+    const buffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
+
+    const channels = buffer.numberOfChannels;
+    const frames = buffer.length;
+    const bytesPerSample = 2;
+    const dataSize = frames * channels * bytesPerSample;
+    const wav = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(wav);
+
+    const write = (offset, value) => {
+     for (let i=0;i<value.length;i++) view.setUint8(offset+i,value.charCodeAt(i));
+    };
+
+    write(0,"RIFF");
+    view.setUint32(4,36+dataSize,true);
+    write(8,"WAVE");
+    write(12,"fmt ");
+    view.setUint32(16,16,true);
+    view.setUint16(20,1,true);
+    view.setUint16(22,channels,true);
+    view.setUint32(24,buffer.sampleRate,true);
+    view.setUint32(28,buffer.sampleRate*channels*bytesPerSample,true);
+    view.setUint16(32,channels*bytesPerSample,true);
+    view.setUint16(34,16,true);
+    write(36,"data");
+    view.setUint32(40,dataSize,true);
+
+    const channelData = [];
+    for (let c=0;c<channels;c++) channelData.push(buffer.getChannelData(c));
+
+    let offset = 44;
+    for (let i=0;i<frames;i++) {
+     for (let c=0;c<channels;c++) {
+      const sample = Math.max(-1,Math.min(1,channelData[c][i]));
+      view.setInt16(offset,sample<0?sample*32768:sample*32767,true);
+      offset += 2;
+     }
+    }
+
+    const file = new File([wav],role+"_recording.wav",{type:"audio/wav"});
+
+    if (isPatient) patientFile = file;
+    else doctorFile = file;
+
+    label.textContent = "Recording ready";
+    hint.textContent = "Ready to transcribe";
+    toast(role === "patient" ? "Patient recording ready." : "Doctor recording ready.");
+
+   } catch (error) {
+    console.error(error);
+    toast("Could not process recording. Please try again or upload audio.");
+   } finally {
+    if (audioContext && audioContext.state !== "closed") await audioContext.close();
+    stream.getTracks().forEach(track => track.stop());
+    delete activeRecorders[role];
+   }
+  };
+
+  recorder.start();
+  button.classList.add("recording");
+  button.textContent = "■";
+  label.textContent = "Recording... tap to stop";
+  hint.textContent = "Speak clearly near your microphone";
+
+ } catch (error) {
+  if (stream) stream.getTracks().forEach(track => track.stop());
+  delete activeRecorders[role];
+  console.error(error);
+  toast("Microphone permission unavailable. Please check browser permissions.");
+ }
+}
+
+$("recordBtn").addEventListener("click", () => recordAudio("patient"));
+$("doctorRecordBtn").addEventListener("click", () => recordAudio("doctor"));
+
+$("audioFile").addEventListener("change", event => {
+ const file = event.target.files[0];
+ if (!file) return;
+
+ if (!file.type.startsWith("audio/")) {
+  toast("Please select an audio file.");
+  event.target.value = "";
+  return;
+ }
+ if (file.size > 15*1024*1024) {
+  toast("Audio must be smaller than 15 MB.");
+  event.target.value = "";
+  return;
+ }
+
+ patientFile = file;
+ $("recordLabel").textContent = file.name;
+ $("recordHint").textContent = "Audio file selected";
+ toast("Patient audio ready.");
+});
+
+async function transcribe(file, language, role) {
+ const form = new FormData();
+ form.append("audio",file);
+ form.append("language_code",language);
+ form.append("role",role);
+
+ const response = await fetch("/api/transcribe",{method:"POST",body:form});
+ const data = await response.json();
+
+ if (!response.ok) throw new Error(data.detail || "Transcription failed.");
+ return data;
+}
+
+$("transcribeBtn").addEventListener("click",async()=>{
+ if (!patientFile) {
+  toast("Record or upload patient audio first.");
+  return;
+ }
+
+ const button = $("transcribeBtn");
+ button.disabled = true;
+ button.textContent = "Transcribing with Prisma...";
+
+ try {
+  const data = await transcribe(patientFile,$("sttLanguage").value,"patient");
+  patientTranscript = data.transcript || "";
+  patientDetectedLanguage = data.detected_language || $("sttLanguage").value;
+
+  $("transcript").textContent = patientTranscript || "No transcript returned.";
+  $("transcript").classList.remove("placeholder");
+  $("detectedLanguage").textContent = patientDetectedLanguage;
+  $("consultTranscript").textContent = patientTranscript || "No transcript returned.";
+
+  toast("Patient voice transcribed successfully.");
+ } catch(error) {
+  toast(error.message);
+ } finally {
+  button.disabled = false;
+  button.textContent = "Transcribe patient audio →";
+ }
+});
+
+$("clearAudioBtn").addEventListener("click",()=>{
+ patientFile = null;
+ $("audioFile").value = "";
+ $("recordLabel").textContent = "Tap to record patient voice";
+ $("recordHint").textContent = "Or upload an audio recording";
+ toast("Patient audio cleared.");
+});
+
+async function translate(text,source,target) {
+ const response = await fetch("/api/translate",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   text,
+   source_language:languageCode(source),
+   target_language:languageCode(target)
+  })
+ });
+
+ const data = await response.json();
+ if (!response.ok) throw new Error(data.detail || "Translation failed.");
+ return data.translated_text;
+}
+
+$("translatePatientBtn").addEventListener("click",async()=>{
+ const text = patientTranscript.trim();
+ if (!text) {
+  toast("Transcribe the patient's voice first.");
+  return;
+ }
+
+ const button = $("translatePatientBtn");
+ button.disabled = true;
+ button.textContent = "Translating...";
+
+ try {
+  const source = patientDetectedLanguage === "Not returned"
+   ? $("sttLanguage").value
+   : patientDetectedLanguage;
+
+  const translated = await translate(text,source,$("doctorLanguage").value);
+  $("patientTranslation").textContent = translated;
+  $("patientTranslation").classList.remove("placeholder");
+  toast("Patient message translated. Doctor review required.");
+ } catch(error) {
+  toast(error.message);
+ } finally {
+  button.disabled = false;
+  button.textContent = "Translate for doctor →";
+ }
+});
+
+$("doctorTranscribeBtn").addEventListener("click",async()=>{
+ if (!doctorFile) {
+  toast("Record the doctor's voice first.");
+  return;
+ }
+
+ const button = $("doctorTranscribeBtn");
+ button.disabled = true;
+ button.textContent = "Transcribing doctor voice...";
+
+ try {
+  const data = await transcribe(
+   doctorFile,$("doctorSpokenLanguage").value,"doctor"
+  );
+
+  doctorTranscript = data.transcript || "";
+  $("doctorText").value = doctorTranscript;
+  $("consultDoctorText").value = doctorTranscript;
+  toast("Doctor voice transcribed successfully.");
+ } catch(error) {
+  toast(error.message);
+ } finally {
+  button.disabled = false;
+  button.textContent = "Transcribe doctor voice →";
+ }
+});
+
+$("translateDoctorBtn").addEventListener("click",async()=>{
+ const text = $("doctorText").value.trim();
+ if (!text) {
+  toast("Record or type the doctor's response first.");
+  return;
+ }
+
+ const button = $("translateDoctorBtn");
+ button.disabled = true;
+ button.textContent = "Translating response...";
+
+ try {
+  const translated = await translate(
+   text,$("doctorSpokenLanguage").value,$("patientLanguage").value
+  );
+  $("translatedDoctorText").value = translated;
+  toast("Response translated. Doctor review required.");
+ } catch(error) {
+  toast(error.message);
+ } finally {
+  button.disabled = false;
+  button.textContent = "Translate response for patient →";
+ }
+});
+
+$("speakBtn").addEventListener("click",async()=>{
+ const text = $("translatedDoctorText").value.trim();
+ if (!text) {
+  toast("Translate and review the doctor's response first.");
+  return;
+ }
+
+ const button = $("speakBtn");
+ button.disabled = true;
+ button.textContent = "Generating patient voice...";
+
+ try {
+  const response = await fetch("/api/speak",{
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    text,
+    language:$("patientLanguage").value,
+    voice:"Pranav"
+   })
+  });
+
+  if (!response.ok) {
+   const data = await response.json();
+   throw new Error(data.detail || "Speech generation failed.");
+  }
+
+  const blob = await response.blob();
+  const url = URL.createObjectURL(blob);
+  const player = $("responseAudio");
+
+  if (player.dataset.url) URL.revokeObjectURL(player.dataset.url);
+  player.src = url;
+  player.dataset.url = url;
+  player.style.display = "block";
+  await player.play();
+
+  toast("Patient voice generated successfully.");
+ } catch(error) {
+  toast(error.message);
+ } finally {
+  button.disabled = false;
+  button.textContent = "Generate patient voice →";
+ }
+});
+
+$("copyToHome").addEventListener("click",()=>{
+ $("doctorText").value = $("consultDoctorText").value;
+ showView("home");
+ toast("Doctor response added to voice workspace.");
+});
+
+$("savePatient").addEventListener("click",()=>{
+ $("patientSaved").textContent = " Details saved for this page session.";
+ toast("Patient details saved for this session.");
+});
+</script>
+
+<script>
+/* SMART FORM FILLING: SEPARATE RECORDING STATE */
+let formPatientFile = null;
+let formPatientTranscript = "";
+let formPatientDetectedLanguage = "en-IN";
+let formRecorder = null;
+let formRecorderStream = null;
+let formRecordingChunks = [];
+
+function setFormRecordingState(recording) {
+ const button = $("formRecordBtn");
+ const stage = $("smartMicStage");
+
+ button.classList.toggle("recording", recording);
+ stage.classList.toggle("is-recording", recording);
+
+ if (recording) {
+  button.textContent = "■  Stop Recording";
+  $("formRecordStatus").textContent = "Recording... Speak clearly, then press Stop Recording.";
+ } else {
+  button.textContent = "🎙  Tap to Speak";
+ }
+}
+
+$("formRecordBtn").addEventListener("click", async () => {
+ if (formRecorder && formRecorder.state === "recording") {
+  formRecorder.stop();
+  setFormRecordingState(false);
+  $("formRecordStatus").textContent = "Preparing your recording...";
+  return;
+ }
+
+ if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+  toast("This browser does not support microphone recording. Please upload an audio file.");
+  return;
+ }
+
+ try {
+  formRecorderStream = await navigator.mediaDevices.getUserMedia({audio:true});
+  formRecordingChunks = [];
+
+  const options = {};
+  if (MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+   options.mimeType = "audio/webm;codecs=opus";
+  }
+
+  formRecorder = new MediaRecorder(formRecorderStream,options);
+
+  formRecorder.ondataavailable = event => {
+   if (event.data && event.data.size > 0) {
+    formRecordingChunks.push(event.data);
+   }
+  };
+
+  formRecorder.onstop = async () => {
+   let audioContext;
+
+   try {
+    const mimeType = formRecorder.mimeType || "audio/webm";
+    const blob = new Blob(formRecordingChunks, {type:mimeType});
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) throw new Error("Audio conversion is unsupported.");
+
+    audioContext = new AudioContextClass();
+    const buffer = await audioContext.decodeAudioData(await blob.arrayBuffer());
+
+    const channels = buffer.numberOfChannels;
+    const frames = buffer.length;
+    const bytesPerSample = 2;
+    const dataSize = frames * channels * bytesPerSample;
+    const wav = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(wav);
+
+    const write = (offset, value) => {
+     for (let i = 0; i < value.length; i++) {
+      view.setUint8(offset + i, value.charCodeAt(i));
+     }
+    };
+
+    write(0, "RIFF");
+    view.setUint32(4, 36 + dataSize, true);
+    write(8, "WAVE");
+    write(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, channels, true);
+    view.setUint32(24, buffer.sampleRate, true);
+    view.setUint32(28, buffer.sampleRate * channels * bytesPerSample, true);
+    view.setUint16(32, channels * bytesPerSample, true);
+    view.setUint16(34, 16, true);
+    write(36, "data");
+    view.setUint32(40, dataSize, true);
+
+    const channelData = [];
+    for (let c = 0; c < channels; c++) {
+     channelData.push(buffer.getChannelData(c));
+    }
+
+    let offset = 44;
+    for (let i = 0; i < frames; i++) {
+     for (let c = 0; c < channels; c++) {
+      const sample = Math.max(-1, Math.min(1, channelData[c][i]));
+      view.setInt16(offset, sample < 0 ? sample * 32768 : sample * 32767, true);
+      offset += 2;
+     }
+    }
+
+    formPatientFile = new File(
+     [wav],
+     "smart_form_patient_recording.wav",
+     {type:"audio/wav"}
+    );
+
+    $("formAudioFile").value = "";
+    $("formRecordStatus").textContent = "WAV recording ready. Click Transcribe with Gnani Prisma.";
+    toast("Smart Form Filling recording converted to WAV.");
+
+   } catch (error) {
+    console.error(error);
+    $("formRecordStatus").textContent = "Audio conversion failed. Please record again.";
+    toast("Could not convert recording. Please try again.");
+   } finally {
+    if (audioContext && audioContext.state !== "closed") {
+     await audioContext.close();
+    }
+
+    if (formRecorderStream) {
+     formRecorderStream.getTracks().forEach(track => track.stop());
+    }
+
+    formRecorderStream = null;
+    formRecorder = null;
+    formRecordingChunks = [];
+   }
+  };
+
+  formRecorder.start();
+  setFormRecordingState(true);
+ } catch (error) {
+  console.error(error);
+  if (formRecorderStream) {
+   formRecorderStream.getTracks().forEach(track => track.stop());
+  }
+  formRecorderStream = null;
+  formRecorder = null;
+  setFormRecordingState(false);
+  $("formRecordStatus").textContent = "Microphone unavailable. Check browser permission or upload audio.";
+  toast("Microphone permission unavailable.");
+ }
+});
+
+$("formAudioFile").addEventListener("change", event => {
+ const file = event.target.files[0];
+ if (!file) return;
+
+ if (!file.type.startsWith("audio/")) {
+  toast("Please select an audio file.");
+  event.target.value = "";
+  return;
+ }
+
+ if (file.size > 15 * 1024 * 1024) {
+  toast("Audio must be smaller than 15 MB.");
+  event.target.value = "";
+  return;
+ }
+
+ formPatientFile = file;
+ $("formRecordStatus").textContent = "Audio selected: " + file.name;
+ setFormRecordingState(false);
+ toast("Smart Form Filling audio selected.");
+});
+
+$("formTranscribeBtn").addEventListener("click", async () => {
+ if (!formPatientFile) {
+  toast("Record or upload patient audio first.");
+  return;
+ }
+
+ const button = $("formTranscribeBtn");
+ button.disabled = true;
+ button.textContent = "Transcribing with Gnani Prisma...";
+
+ try {
+  const data = await transcribe(
+   formPatientFile,
+   $("formSttLanguage").value,
+   "patient"
+  );
+
+  formPatientTranscript = data.transcript || "";
+  formPatientDetectedLanguage = data.detected_language || $("formSttLanguage").value;
+
+  if (!formPatientTranscript.trim()) {
+   throw new Error("No transcript was returned. Please try recording again.");
+  }
+
+  $("formSourceTranscript").textContent = formPatientTranscript;
+  $("formSourceTranscript").classList.remove("placeholder");
+
+  $("formDetectedLanguage").textContent = formPatientDetectedLanguage;
+
+  $("formRecordStatus").textContent = "Transcription successful. You can now fill the form.";
+  $("formExtractStatus").textContent = "Transcript received. Click Extract details and fill form.";
+  toast("Smart Form Filling transcription successful.");
+ } catch (error) {
+  console.error(error);
+  toast(error.message);
+  $("formRecordStatus").textContent = "Transcription failed. Check the audio and try again.";
+ } finally {
+  button.disabled = false;
+  button.textContent = "Transcribe with Gnani Prisma →";
+ }
+});
+
+$("formClearAudioBtn").addEventListener("click", () => {
+ if (formRecorder && formRecorder.state === "recording") {
+  formRecorder.stop();
+ }
+ formPatientFile = null;
+ formPatientTranscript = "";
+ $("formAudioFile").value = "";
+ $("formSourceTranscript").textContent = "Your patient transcript will appear here after transcription.";
+ $("formSourceTranscript").classList.add("placeholder");
+ $("formDetectedLanguage").textContent = "Waiting for audio";
+ $("formRecordStatus").textContent = "Your microphone is ready.";
+ $("formExtractStatus").textContent = "Only clearly detected details are filled. Unknown fields remain blank.";
+ setFormRecordingState(false);
+ toast("Smart Form Filling audio cleared.");
+});
+
+/* Multilingual Smart Form extraction. Original transcript is always preserved. */
+
+async function translateSmartFormTranscript(text, sourceLanguage) {
+ if (!sourceLanguage || sourceLanguage === "indic-auto") {
+  throw new Error("Gnani did not return the detected language. Please transcribe again.");
+ }
+
+ const source = languageCode(sourceLanguage);
+ if (source === "en-IN" || source === "en") return text;
+
+ const words = text.match(/\S+\s*/gu) || [];
+ const chunks = [];
+ let current = "";
+
+ for (const word of words) {
+  if (current && new TextEncoder().encode(current + word).length > 400) {
+   chunks.push(current.trim());
+   current = "";
+  }
+  current += word;
+ }
+ if (current.trim()) chunks.push(current.trim());
+
+ const translated = [];
+ for (const chunk of chunks) {
+  translated.push(await translate(chunk, source, "en-IN"));
+ }
+ return translated.join(" ");
+}
+
+function extractSmartFormDetails(text, originalTranscript) {
+ const result = {
+  name: "", age: "", duration: "", allergies: "",
+  medications: "", symptoms: originalTranscript
+ };
+
+ const nameMatch = text.match(/\b(?:my\s+)?name(?:\s+is)?\s+([^,.!?;\n]+)/i);
+ if (nameMatch) {
+  result.name = nameMatch[1].trim()
+   .split(/\b(?:and\s+)?(?:i am|i'm|i have|my age is|age is)\b/i)[0].trim();
+ }
+
+ const words = {
+  one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,
+  ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,
+  sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20,
+  thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90
+ };
+ const ageMatch = text.match(/\b(?:i am|i'm|age is|aged)\s+(\d{1,3}|[a-z]+(?:[- ][a-z]+)?)(?:\s+years?\s*old)?\b/i);
+ if (ageMatch) {
+  const raw = ageMatch[1].toLowerCase();
+  if (/^\d+$/.test(raw)) result.age = raw;
+  else {
+   const parts = raw.split(/[- ]/);
+   if (parts.length <= 2 && parts.every(part => words[part] !== undefined)) {
+    result.age = String(parts.reduce((sum, part) => sum + words[part], 0));
+   }
+  }
+ }
+
+ const negativeFever = /\b(?:no fever|not having a fever|don't have a fever|do not have a fever|without fever)\b/i.test(text);
+ const positiveFever = /\bfever\s+(?:for|since)\b/i.test(text);
+ if (!(negativeFever && positiveFever)) {
+  const durationPattern = /\b(?:for|since)\s+(?:the\s+)?(?:last\s+)?(?:\d+\s+\w+|yesterday|today|this morning|last night|a week|one week|two days|a few days)\b/gi;
+  result.duration = [...text.matchAll(durationPattern)].map(m => m[0].trim()).filter((v,i,a) => a.indexOf(v) === i).join("; ");
+ }
+
+ const allergyPattern = /\b(?:no known allergies|not allergic to anything|no allergies|i (?:don't|do not) have (?:any )?allerg(?:y|ies)|allergic to\s+[^,.!?;]+|allergy to\s+[^,.!?;]+|i have (?:an )?allerg(?:y|ies)|there is an allerg(?:y|ies))\b/gi;
+ result.allergies = [...text.matchAll(allergyPattern)].map(m => m[0].trim()).filter((v,i,a) => a.indexOf(v) === i).join("; ");
+
+ const medicationPattern = /\b(?:currently taking|taking medication(?:s)?(?: called)?|my medication(?:s)? (?:is|are)|i take)\s+[^,.!?;]+/gi;
+ result.medications = [...text.matchAll(medicationPattern)].map(m => m[0].trim()).filter((v,i,a) => a.indexOf(v) === i).join("; ");
+
+ return result;
+}
+
+$("extractPatientForm").addEventListener("click", async () => {
+ const originalText = (formPatientTranscript || "").trim();
+
+ if (!originalText) {
+  toast("Record and transcribe patient audio on this page first.");
+  return;
+ }
+
+ const button = $("extractPatientForm");
+ button.disabled = true;
+ button.textContent = "Extracting patient details...";
+
+ try {
+  const response = await fetch("/api/extract-form", {
+   method: "POST",
+   headers: {"Content-Type": "application/json"},
+   body: JSON.stringify({
+    transcript: originalText,
+    detected_language: formPatientDetectedLanguage
+   })
+  });
+
+  const details = await response.json();
+  if (!response.ok) {
+   throw new Error(details.detail || "Patient form extraction failed.");
+  }
+
+  $("formPatientName").value = details.name || "";
+  $("formPatientAge").value = details.age || "";
+  $("formDuration").value = details.duration || "";
+  $("formAllergies").value = details.allergies || "";
+  $("formMedications").value = details.medications || "";
+  $("formSymptoms").value = details.symptoms || originalText;
+
+  $("formExtractStatus").textContent =
+   "Extraction completed. Original patient statement preserved. Verify every field before use.";
+  toast("Patient form prepared. Please verify every field.");
+ } catch (error) {
+  console.error(error);
+  $("formPatientName").value = "";
+  $("formPatientAge").value = "";
+  $("formDuration").value = "";
+  $("formAllergies").value = "";
+  $("formMedications").value = "";
+  $("formSymptoms").value = originalText;
+  $("formExtractStatus").textContent =
+   "Extraction failed. Original transcript preserved; other fields left blank. " + error.message;
+  toast("Extraction unavailable. Original transcript is safe.");
+ } finally {
+  button.disabled = false;
+  button.textContent = "Extract details and fill form";
+ }
+});
+
+$("generateFormSummary").addEventListener("click", () => {
+ const fields = [
+  ["Patient name", $("formPatientName").value],
+  ["Age", $("formPatientAge").value],
+  ["Symptom duration", $("formDuration").value],
+  ["Allergies", $("formAllergies").value],
+  ["Symptoms / patient statement", $("formSymptoms").value],
+  ["Current medications", $("formMedications").value],
+  ["Doctor notes", $("formNotes").value]
+ ];
+
+ const summary = fields
+  .filter(([key,value]) => value.trim())
+  .map(([key,value]) => key + ": " + value.trim())
+  .join("\n\n");
+
+ if (!summary) {
+  toast("Fill at least one field first.");
+  return;
+ }
+
+ $("formSummary").textContent = summary;
+ $("formSummary").classList.remove("placeholder");
+ toast("Consultation summary generated.");
+});
+
+$("clearPatientForm").addEventListener("click", () => {
+ [
+  "formPatientName","formPatientAge","formDuration",
+  "formAllergies","formSymptoms","formMedications","formNotes"
+ ].forEach(id => $(id).value = "");
+
+ $("formSummary").textContent = "Your summary will appear here.";
+ $("formSummary").classList.add("placeholder");
+
+ toast("Form cleared.");
+});
+
+$("copyFormSummary").addEventListener("click", async () => {
+ const text = $("formSummary").textContent;
+
+ if (!text || text === "Your summary will appear here.") {
+  toast("Generate the summary first.");
+  return;
+ }
+
+ try {
+  await navigator.clipboard.writeText(text);
+  toast("Summary copied.");
+ } catch (error) {
+  toast("Clipboard unavailable. Select and copy the summary manually.");
+ }
+});
+</script>
+
+</body>
+</html>

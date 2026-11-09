@@ -1,0 +1,13 @@
+﻿.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.streamlit/secrets.toml
+uploads/*
+patch_*.py
+fix_*.py
+test_*.py
+
+.vscode/
+templates/index_backup*.html
